@@ -11,7 +11,8 @@
     ],
     "require": {},
     "require-dev": {
-        "phpunit/phpunit": "^7.5"
+        "phpunit/phpunit": "^7.5",
+        "orchestra/testbench": "~3.0"
     },
     "autoload": {
         "psr-4": {
@@ -21,6 +22,16 @@
     "autoload-dev": {
         "psr-4": {
             "AdrianBav\\Traffic\\Tests\\": "tests"
+        }
+    },
+    "extra": {
+        "laravel": {
+            "providers": [
+                "AdrianBav\\Traffic\\TrafficServiceProvider"
+            ],
+            "aliases": {
+                "Traffic": "AdrianBav\\Traffic\\Facades\\Traffic"
+            }
         }
     }
 }
