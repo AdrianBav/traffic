@@ -33,7 +33,7 @@ class Traffic
     /**
      * Return the number of visits.
      *
-     * @return  integer
+     * @return  int
      */
     public function visits()
     {
