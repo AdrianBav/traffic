@@ -43,7 +43,7 @@ class Traffic
     public function visits($site)
     {
         return $this->visits
-            ->filter(function($visit) use ($site) {
+            ->filter(function ($visit) use ($site) {
                 return $visit['site'] == $site;
             })->count();
     }
