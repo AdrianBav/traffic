@@ -23,7 +23,7 @@ class TrafficServiceProvider extends ServiceProvider
      */
     public function register()
     {
-        $this->app->singleton('traffic', function($app) {
+        $this->app->singleton('traffic', function ($app) {
             return new Traffic;
         });
     }
