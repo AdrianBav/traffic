@@ -15,14 +15,12 @@ composer require adrianbav/traffic
 ## Usage
 
 ```php
-use AdrianBav\Traffic\Traffic;
+use AdrianBav\Traffic\Facades\Traffic;
 
-$traffic = new Traffic;
+Traffic::record('site 1');
+Traffic::record('site 2');
 
-$traffic->record('site 1');
-$traffic->record('site 2');
-
-$visitCount = $traffic->visits();
+$visitCount = Traffic::visits();
 ```
 
 ## License
