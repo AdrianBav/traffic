@@ -7,7 +7,7 @@ class Traffic
     /**
      * An array of site visits.
      *
-     * @var  array
+     * @var  Collection
      */
     protected $visits;
 
@@ -16,27 +16,35 @@ class Traffic
      */
     public function __construct()
     {
-        $this->visits = [];
+        $this->visits = collect();
     }
 
     /**
      * Record a visit.
      *
-     * @param   mixed  $visit
+     * @param   string  $site
+     * @param   array   $payload
      * @return  void
      */
-    public function record($visit)
+    public function record($site, $payload)
     {
-        $this->visits[] = $visit;
+        $this->visits->push([
+            'site' => $site,
+            'payload' => $payload,
+        ]);
     }
 
     /**
      * Return the number of visits.
      *
+     * @param   string  $site
      * @return  int
      */
-    public function visits()
+    public function visits($site)
     {
-        return count($this->visits);
+        return $this->visits
+            ->filter(function($visit) use ($site) {
+                return $visit['site'] == $site;
+            })->count();
     }
 }

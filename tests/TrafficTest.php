@@ -25,11 +25,28 @@ class TrafficTest extends TestCase
     }
 
     /** @test */
-    public function the_visit_count_is_returned()
+    public function the_visit_count_starts_at_zero()
     {
-        $this->traffic->record('site1');
-        $this->traffic->record('site2');
+        $this->assertEquals(0, $this->traffic->visits('site1'));
+    }
 
-        $this->assertEquals(2, $this->traffic->visits());
+    /** @test */
+    public function the_correct_visit_count_is_returned()
+    {
+        $this->traffic->record('site1', ['visit1']);
+        $this->traffic->record('site1', ['visit2']);
+
+        $this->assertEquals(2, $this->traffic->visits('site1'));
+    }
+
+    /** @test  */
+    public function multiple_sites_can_be_counted_indipendently()
+    {
+        $this->traffic->record('site1', ['visit1']);
+        $this->traffic->record('site1', ['visit2']);
+        $this->traffic->record('site2', ['visit1']);
+
+        $this->assertEquals(2, $this->traffic->visits('site1'));
+        $this->assertEquals(1, $this->traffic->visits('site2'));
     }
 }
