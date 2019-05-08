@@ -37,10 +37,12 @@ protected $middleware = [
 ```php
 // in a routes file
 
-Route::post('/submit-form', function () {
+Route::post('/article', function () {
     //
 })->middleware(\AdrianBav\Traffic\Middlewares\Traffic::class);
 ```
+
+Get a visit count for the specified site.
 
 ```php
 use AdrianBav\Traffic\Facades\Traffic;
