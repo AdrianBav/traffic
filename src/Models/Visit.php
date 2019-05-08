@@ -12,6 +12,6 @@ class Visit extends Model
      * @var array
      */
     protected $guarded = [
-        'id', 'updated_at', 'created_at'
+        'id', 'updated_at', 'created_at',
     ];
 }
