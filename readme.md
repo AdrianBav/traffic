@@ -12,15 +12,23 @@ Require the package using composer:
 composer require adrianbav/traffic
 ```
 
+## Configuration
+
+To publish the config, run the vendor publish command:
+
+```bash
+php artisan vendor:publish --provider="AdrianBav\Traffic\TrafficServiceProvider"
+```
+
 ## Usage
 
 ```php
 use AdrianBav\Traffic\Facades\Traffic;
 
-Traffic::record('site 1');
-Traffic::record('site 2');
+Traffic::record(['visit1']);
+Traffic::record(['visit2']);
 
-$visitCount = Traffic::visits();
+$visitCount = Traffic::visits('traffic_site_slug');  // 2
 ```
 
 ## License

@@ -5,6 +5,13 @@ namespace AdrianBav\Traffic;
 class Traffic
 {
     /**
+     * This sites identification.
+     *
+     * @var  String
+     */
+    protected $site;
+
+    /**
      * An array of site visits.
      *
      * @var  Collection
@@ -16,6 +23,7 @@ class Traffic
      */
     public function __construct()
     {
+        $this->site = config('traffic.site_slug');
         $this->visits = collect();
     }
 
@@ -26,10 +34,10 @@ class Traffic
      * @param   array   $payload
      * @return  void
      */
-    public function record($site, $payload)
+    public function record($payload)
     {
         $this->visits->push([
-            'site' => $site,
+            'site' => $this->site,
             'payload' => $payload,
         ]);
     }

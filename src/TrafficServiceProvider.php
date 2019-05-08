@@ -13,7 +13,9 @@ class TrafficServiceProvider extends ServiceProvider
      */
     public function boot()
     {
-        //
+        $this->publishes([
+            __DIR__.'/../config/traffic.php' => config_path('traffic.php'),
+        ]);
     }
 
     /**
@@ -26,5 +28,9 @@ class TrafficServiceProvider extends ServiceProvider
         $this->app->singleton('traffic', function ($app) {
             return new Traffic;
         });
+
+        $this->mergeConfigFrom(
+            __DIR__.'/../config/traffic.php', 'traffic'
+        );
     }
 }

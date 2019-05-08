@@ -2,51 +2,70 @@
 
 namespace AdrianBav\Traffic\Tests;
 
-use AdrianBav\Traffic\Traffic;
-use PHPUnit\Framework\TestCase;
+use Orchestra\Testbench\TestCase;
+use AdrianBav\Traffic\Facades\Traffic;
+use AdrianBav\Traffic\TrafficServiceProvider;
 
 class TrafficTest extends TestCase
 {
     /**
-     * An instance of the traffic package.
+     * The site slug used for testing.
      *
-     * @var  Traffic
+     * @var  string
      */
-    protected $traffic;
+    protected $trafficSiteSlug;
 
     /**
-     * Common setup.
+     * Setup the test environment.
+     *
+     * @return void
      */
-    protected function setUp()
+    protected function setUp(): void
     {
         parent::setUp();
 
-        $this->traffic = new Traffic;
+        $this->trafficSiteSlug = ENV('TRAFFIC_SITE_SLUG');
     }
+
+    /**
+     * Get package providers.
+     *
+     * @param  \Illuminate\Foundation\Application  $app
+     * @return array
+     */
+    protected function getPackageProviders($app)
+    {
+        return [
+            TrafficServiceProvider::class,
+        ];
+    }
+
+    /**
+     * Get package aliases.
+     *
+     * @param  \Illuminate\Foundation\Application  $app
+     * @return array
+     */
+    protected function getPackageAliases($app)
+    {
+        return [
+            'Traffic' => Traffic::class,
+        ];
+    }
+
 
     /** @test */
     public function the_visit_count_starts_at_zero()
     {
-        $this->assertEquals(0, $this->traffic->visits('site1'));
+        $this->assertEquals(0, Traffic::visits($this->trafficSiteSlug));
     }
 
     /** @test */
     public function the_correct_visit_count_is_returned()
     {
-        $this->traffic->record('site1', ['visit1']);
-        $this->traffic->record('site1', ['visit2']);
+        Traffic::record(['visit1']);
+        Traffic::record(['visit2']);
 
-        $this->assertEquals(2, $this->traffic->visits('site1'));
-    }
-
-    /** @test  */
-    public function multiple_sites_can_be_counted_indipendently()
-    {
-        $this->traffic->record('site1', ['visit1']);
-        $this->traffic->record('site1', ['visit2']);
-        $this->traffic->record('site2', ['visit1']);
-
-        $this->assertEquals(2, $this->traffic->visits('site1'));
-        $this->assertEquals(1, $this->traffic->visits('site2'));
+        $this->assertEquals(2, Traffic::visits($this->trafficSiteSlug));
     }
 }
