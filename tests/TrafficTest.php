@@ -24,7 +24,7 @@ class TrafficTest extends TestCase
     {
         parent::setUp();
 
-        $this->trafficSiteSlug = ENV('TRAFFIC_SITE_SLUG');
+        $this->trafficSiteSlug = getenv('TRAFFIC_SITE_SLUG');
     }
 
     /**
