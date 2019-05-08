@@ -34,7 +34,7 @@ class TrafficServiceProvider extends ServiceProvider
         );
 
         $this->app->singleton('traffic', function ($app) {
-            return new Traffic;
+            return new Traffic(config('traffic.site_slug'));
         });
     }
 }

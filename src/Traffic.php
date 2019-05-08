@@ -15,16 +15,18 @@ class Traffic
 
     /**
      * Instantiate a new Traffic instance.
+     *
+     * @param   string  $site
+     * @return  void
      */
-    public function __construct()
+    public function __construct($site)
     {
-        $this->site = config('traffic.site_slug');
+        $this->site = $site;
     }
 
     /**
      * Record a visit.
      *
-     * @param   string  $site
      * @param   array   $payload
      * @return  void
      */
