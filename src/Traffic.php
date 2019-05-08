@@ -7,7 +7,7 @@ class Traffic
     /**
      * This sites identification.
      *
-     * @var  String
+     * @var  string
      */
     protected $site;
 
