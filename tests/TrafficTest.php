@@ -2,9 +2,11 @@
 
 namespace AdrianBav\Traffic\Tests;
 
-use AdrianBav\Traffic\Traffic;
 use Orchestra\Testbench\TestCase;
-use AdrianBav\Traffic\Facades\Traffic as TrafficFacade;
+use Illuminate\Contracts\Http\Kernel;
+use Illuminate\Support\Facades\Route;
+use AdrianBav\Traffic\Facades\Traffic;
+use AdrianBav\Traffic\Middlewares\Record;
 use AdrianBav\Traffic\TrafficServiceProvider;
 
 class TrafficTest extends TestCase
@@ -38,7 +40,7 @@ class TrafficTest extends TestCase
     protected function getPackageAliases($app)
     {
         return [
-            'Traffic' => TrafficFacade::class,
+            'Traffic' => Traffic::class,
         ];
     }
 
@@ -51,9 +53,46 @@ class TrafficTest extends TestCase
     {
         parent::setUp();
 
-        $this->artisan('migrate', ['--database' => 'testbench'])->run();
+        $this->setUpMigrations();
+        $this->setUpRoutes();
 
         $this->trafficSiteSlug = getenv('TRAFFIC_SITE_SLUG');
+    }
+
+    /**
+     * Setup migrations.
+     *
+     * @return void
+     */
+    protected function setUpMigrations()
+    {
+        $this->artisan('migrate', ['--database' => 'testbench'])->run();
+    }
+
+    /**
+     * Setup routes.
+     *
+     * @return void
+     */
+    protected function setUpRoutes()
+    {
+        Route::get('/route-without-middleware', function () {
+            return response();
+        });
+
+        Route::get('/route-with-middleware', function () {
+            return response();
+        })->middleware(Record::class);
+    }
+
+    /**
+     * Setup middleware.
+     *
+     * @return void
+     */
+    protected function setUpGlobalMiddleware()
+    {
+        $this->app[Kernel::class]->pushMiddleware(Record::class);
     }
 
     /**
@@ -75,27 +114,39 @@ class TrafficTest extends TestCase
     /** @test */
     public function the_visit_count_starts_at_zero()
     {
-        $this->assertEquals(0, TrafficFacade::visits($this->trafficSiteSlug));
+        $this->assertEquals(0, Traffic::visits($this->trafficSiteSlug));
     }
 
     /** @test */
     public function the_correct_visit_count_is_returned()
     {
-        TrafficFacade::record(['visit1']);
-        TrafficFacade::record(['visit2']);
+        Traffic::record(['visit1']);
+        Traffic::record(['visit2']);
 
-        $this->assertEquals(2, TrafficFacade::visits($this->trafficSiteSlug));
+        $this->assertEquals(2, Traffic::visits($this->trafficSiteSlug));
     }
 
     /** @test  */
-    public function visits_are_persisted_between_requests()
+    public function visits_are_persisted_between_requests_using_route_middleware()
     {
-        $traffic1 = new Traffic;
-        $traffic2 = new Traffic;
+        $this->get('/route-with-middleware');
+        $this->assertEquals(1, Traffic::visits($this->trafficSiteSlug));
 
-        $traffic1->record(['visit1']);
-        $traffic2->record(['visit2']);
+        $this->get('/route-with-middleware');
+        $this->get('/route-with-middleware');
+        $this->assertEquals(3, Traffic::visits($this->trafficSiteSlug));
+    }
 
-        $this->assertEquals(2, TrafficFacade::visits($this->trafficSiteSlug));
+    /** @test  */
+    public function visits_are_persisted_between_requests_using_global_middleware()
+    {
+        $this->setUpGlobalMiddleware();
+
+        $this->get('/route-without-middleware');
+        $this->assertEquals(1, Traffic::visits($this->trafficSiteSlug));
+
+        $this->get('/route-without-middleware');
+        $this->get('/route-without-middleware');
+        $this->assertEquals(3, Traffic::visits($this->trafficSiteSlug));
     }
 }

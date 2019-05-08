@@ -22,13 +22,30 @@ php artisan vendor:publish --provider="AdrianBav\Traffic\TrafficServiceProvider"
 
 ## Usage
 
+This packages provides a middleware which can be added as a global middleware or as a single route.
+
+```php
+// in `app/Http/Kernel.php`
+
+protected $middleware = [
+    // ...
+    
+    \AdrianBav\Traffic\Middlewares\Traffic::class
+];
+```
+
+```php
+// in a routes file
+
+Route::post('/submit-form', function () {
+    //
+})->middleware(\AdrianBav\Traffic\Middlewares\Traffic::class);
+```
+
 ```php
 use AdrianBav\Traffic\Facades\Traffic;
 
-Traffic::record(['visit1']);
-Traffic::record(['visit2']);
-
-$visitCount = Traffic::visits('traffic_site_slug');  // 2
+$blogVisitCount = Traffic::visits('blog_site_slug');
 ```
 
 ## License
