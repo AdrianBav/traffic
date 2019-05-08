@@ -53,7 +53,6 @@ class TrafficTest extends TestCase
         ];
     }
 
-
     /** @test */
     public function the_visit_count_starts_at_zero()
     {
