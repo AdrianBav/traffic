@@ -2,6 +2,8 @@
 
 namespace AdrianBav\Traffic;
 
+use AdrianBav\Traffic\Models\Visit;
+
 class Traffic
 {
     /**
@@ -12,19 +14,11 @@ class Traffic
     protected $site;
 
     /**
-     * An array of site visits.
-     *
-     * @var  Collection
-     */
-    protected $visits;
-
-    /**
      * Instantiate a new Traffic instance.
      */
     public function __construct()
     {
         $this->site = config('traffic.site_slug');
-        $this->visits = collect();
     }
 
     /**
@@ -36,9 +30,9 @@ class Traffic
      */
     public function record($payload)
     {
-        $this->visits->push([
+        Visit::create([
             'site' => $this->site,
-            'payload' => $payload,
+            'payload' => $payload[0],
         ]);
     }
 
@@ -50,9 +44,6 @@ class Traffic
      */
     public function visits($site)
     {
-        return $this->visits
-            ->filter(function ($visit) use ($site) {
-                return $visit['site'] == $site;
-            })->count();
+        return Visit::where('site', $this->site)->count();
     }
 }

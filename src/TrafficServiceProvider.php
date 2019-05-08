@@ -16,6 +16,10 @@ class TrafficServiceProvider extends ServiceProvider
         $this->publishes([
             __DIR__.'/../config/traffic.php' => config_path('traffic.php'),
         ]);
+
+        $this->loadMigrationsFrom(
+            __DIR__.'/../database/migrations'
+        );
     }
 
     /**
@@ -25,12 +29,12 @@ class TrafficServiceProvider extends ServiceProvider
      */
     public function register()
     {
-        $this->app->singleton('traffic', function ($app) {
-            return new Traffic;
-        });
-
         $this->mergeConfigFrom(
             __DIR__.'/../config/traffic.php', 'traffic'
         );
+
+        $this->app->singleton('traffic', function ($app) {
+            return new Traffic;
+        });
     }
 }
