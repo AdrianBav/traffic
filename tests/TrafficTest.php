@@ -97,13 +97,16 @@ class TrafficTest extends TestCase
 
     /**
      * Define environment setup.
-     * Note: The service provider will clone this connection to 'traffic'.
      *
      * @param  \Illuminate\Foundation\Application  $app
      * @return void
      */
     protected function getEnvironmentSetUp($app)
     {
+        // Allow recording of multiple visits per session
+        $app['config']->set('traffic.single_visit', false);
+
+        // The service provider will clone this connection to 'traffic'
         $app['config']->set('traffic.database_default', 'testing');
     }
 
@@ -153,5 +156,28 @@ class TrafficTest extends TestCase
 
         $this->get('/route-with-middleware');
         $this->assertEquals(0, Traffic::visits($this->trafficSiteSlug));
+    }
+
+    /** @test  */
+    public function package_can_be_configured_to_record_only_one_visit_per_session()
+    {
+        config(['traffic.single_visit' => true]);
+
+        $this->get('/route-with-middleware');
+        $this->assertEquals(1, Traffic::visits($this->trafficSiteSlug));
+
+        $this->get('/route-with-middleware');
+        $this->assertEquals(1, Traffic::visits($this->trafficSiteSlug));
+
+        $this->get('/route-with-middleware');
+        $this->assertEquals(1, Traffic::visits($this->trafficSiteSlug));
+
+        session()->flush();
+
+        $this->get('/route-with-middleware');
+        $this->assertEquals(2, Traffic::visits($this->trafficSiteSlug));
+
+        $this->get('/route-with-middleware');
+        $this->assertEquals(2, Traffic::visits($this->trafficSiteSlug));
     }
 }
