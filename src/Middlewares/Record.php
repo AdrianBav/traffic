@@ -10,7 +10,12 @@ class Record
 {
     public function handle(Request $request, Closure $next)
     {
-        Traffic::record(['visit1']);
+        if (config('traffic.enabled')) {
+            Traffic::record(
+                $request->ip(),
+                $request->userAgent()
+            );
+        }
 
         return $next($request);
     }

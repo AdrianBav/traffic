@@ -17,7 +17,8 @@ class CreateVisitsTable extends Migration
             $table->bigIncrements('id');
 
             $table->string('site');
-            $table->string('payload');
+            $table->string('ip');
+            $table->string('agent');
 
             $table->timestamps();
         });

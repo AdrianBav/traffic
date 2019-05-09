@@ -120,8 +120,8 @@ class TrafficTest extends TestCase
     /** @test */
     public function the_correct_visit_count_is_returned()
     {
-        Traffic::record(['visit1']);
-        Traffic::record(['visit2']);
+        Traffic::record($ip = 'localhost', $agent = 'Symfony');
+        Traffic::record($ip = 'localhost', $agent = 'Symfony');
 
         $this->assertEquals(2, Traffic::visits($this->trafficSiteSlug));
     }

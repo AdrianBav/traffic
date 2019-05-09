@@ -27,14 +27,16 @@ class Traffic
     /**
      * Record a visit.
      *
-     * @param   array   $payload
+     * @param   string  $ip
+     * @param   string  $agent
      * @return  void
      */
-    public function record($payload)
+    public function record($ip, $agent)
     {
         Visit::create([
             'site' => $this->site,
-            'payload' => $payload[0],
+            'ip' => $ip,
+            'agent' => $agent,
         ]);
     }
 
@@ -46,6 +48,7 @@ class Traffic
      */
     public function visits($site)
     {
-        return Visit::where('site', $this->site)->count();
+        return Visit::where('site', $this->site)
+            ->count();
     }
 }
