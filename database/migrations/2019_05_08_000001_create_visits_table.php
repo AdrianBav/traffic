@@ -16,9 +16,14 @@ class CreateVisitsTable extends Migration
         Schema::connection('traffic')->create('visits', function (Blueprint $table) {
             $table->bigIncrements('id');
 
-            $table->unsignedInteger('site_id');
-            $table->unsignedInteger('ip_id');
-            $table->unsignedInteger('agent_id');
+            $table->unsignedBigInteger('site_id');
+            $table->foreign('site_id')->references('id')->on('sites');
+
+            $table->unsignedBigInteger('ip_id');
+            $table->foreign('ip_id')->references('id')->on('ips');
+
+            $table->unsignedBigInteger('agent_id');
+            $table->foreign('agent_id')->references('id')->on('agents');
 
             $table->timestamps();
         });

@@ -16,7 +16,7 @@ class CreateSitesTable extends Migration
         Schema::connection('traffic')->create('sites', function (Blueprint $table) {
             $table->bigIncrements('id');
 
-            $table->string('slug');
+            $table->string('slug', 50);
 
             $table->timestamps();
         });
