@@ -18,7 +18,12 @@ To publish the config, run the vendor publish command:
 
 ```bash
 php artisan vendor:publish --provider="AdrianBav\Traffic\TrafficServiceProvider"
-php artisam migrate
+```
+
+To create the necessary tables, run the migrate command:
+
+```bash
+php artisan migrate
 ```
 
 ## Usage

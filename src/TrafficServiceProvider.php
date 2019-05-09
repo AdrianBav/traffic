@@ -2,6 +2,7 @@
 
 namespace AdrianBav\Traffic;
 
+use Illuminate\Support\Facades\Config;
 use Illuminate\Support\ServiceProvider;
 
 class TrafficServiceProvider extends ServiceProvider
@@ -16,6 +17,8 @@ class TrafficServiceProvider extends ServiceProvider
         $this->publishes([
             __DIR__.'/../config/traffic.php' => config_path('traffic.php'),
         ]);
+
+        $this->setConnection();
 
         $this->loadMigrationsFrom(
             __DIR__.'/../database/migrations'
@@ -36,5 +39,24 @@ class TrafficServiceProvider extends ServiceProvider
         $this->app->singleton('traffic', function ($app) {
             return new Traffic(config('traffic.site_slug'));
         });
+    }
+
+    /**
+     * Clone the configured package connection to the apps database connections.
+     *
+     * @return void
+     */
+    protected function setConnection()
+    {
+        $connection = Config::get('traffic.database_default');
+
+        if ($connection !== 'default') {
+            $trafficConnection = Config::get('traffic.database_connections.'.$connection);
+        } else {
+            $connection = Config::get('database.default');
+            $trafficConnection = Config::get('database.connections.'.$connection);
+        }
+
+        Config::set('database.connections.traffic', $trafficConnection);
     }
 }

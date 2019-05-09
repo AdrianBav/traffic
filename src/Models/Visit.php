@@ -2,9 +2,7 @@
 
 namespace AdrianBav\Traffic\Models;
 
-use Illuminate\Database\Eloquent\Model;
-
-class Visit extends Model
+class Visit extends BaseModel
 {
     /**
      * The attributes that aren't mass assignable.

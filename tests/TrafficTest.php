@@ -66,7 +66,7 @@ class TrafficTest extends TestCase
      */
     protected function setUpMigrations()
     {
-        $this->artisan('migrate', ['--database' => 'testbench']);
+        $this->artisan('migrate', ['--database' => 'traffic']);
     }
 
     /**
@@ -97,18 +97,14 @@ class TrafficTest extends TestCase
 
     /**
      * Define environment setup.
+     * Note: The service provider will clone this connection to 'traffic'.
      *
      * @param  \Illuminate\Foundation\Application  $app
      * @return void
      */
     protected function getEnvironmentSetUp($app)
     {
-        $app['config']->set('database.default', 'testbench');
-        $app['config']->set('database.connections.testbench', [
-            'driver'   => 'sqlite',
-            'database' => ':memory:',
-            'prefix'   => '',
-        ]);
+        $app['config']->set('traffic.database_default', 'testing');
     }
 
     /** @test */
