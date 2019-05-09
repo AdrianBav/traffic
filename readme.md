@@ -18,6 +18,7 @@ To publish the config, run the vendor publish command:
 
 ```bash
 php artisan vendor:publish --provider="AdrianBav\Traffic\TrafficServiceProvider"
+php artisam migrate
 ```
 
 ## Usage
@@ -25,12 +26,14 @@ php artisan vendor:publish --provider="AdrianBav\Traffic\TrafficServiceProvider"
 This packages provides a middleware which can be added as a global middleware or as a single route.
 
 ```php
+use AdrianBav\Traffic\Middlewares\Record;
+
 // in `app/Http/Kernel.php`
 
 protected $middleware = [
     // ...
-    
-    \AdrianBav\Traffic\Middlewares\Traffic::class
+
+    Record::class
 ];
 ```
 
@@ -39,7 +42,7 @@ protected $middleware = [
 
 Route::post('/article', function () {
     //
-})->middleware(\AdrianBav\Traffic\Middlewares\Traffic::class);
+})->middleware(Record::class);
 ```
 
 Get a visit count for the specified site.
