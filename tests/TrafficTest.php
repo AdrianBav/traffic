@@ -15,13 +15,6 @@ use AdrianBav\Traffic\TrafficServiceProvider;
 class TrafficTest extends TestCase
 {
     /**
-     * The site slug used for testing.
-     *
-     * @var  string
-     */
-    protected $trafficSiteSlug;
-
-    /**
      * Get package providers.
      *
      * @param  \Illuminate\Foundation\Application  $app
@@ -58,8 +51,6 @@ class TrafficTest extends TestCase
 
         $this->setUpMigrations();
         $this->setUpRoutes();
-
-        $this->trafficSiteSlug = getenv('TRAFFIC_SITE_SLUG');
     }
 
     /**
@@ -106,6 +97,9 @@ class TrafficTest extends TestCase
      */
     protected function getEnvironmentSetUp($app)
     {
+        // Set the slug to use for testing this application
+        $app['config']->set('traffic.site_slug', 'traffic_testing_slug');
+
         // Allow recording of multiple visits per session
         $app['config']->set('traffic.single_visit', false);
 
@@ -116,7 +110,7 @@ class TrafficTest extends TestCase
     /** @test */
     public function the_visit_count_starts_at_zero()
     {
-        $this->assertEquals(0, Traffic::visits($this->trafficSiteSlug));
+        $this->assertEquals(0, Traffic::visits('traffic_testing_slug'));
     }
 
     /** @test */
@@ -125,18 +119,18 @@ class TrafficTest extends TestCase
         Traffic::record($ip = '127.0.0.1', $agent = 'Symfony');
         Traffic::record($ip = '127.0.0.1', $agent = 'Symfony');
 
-        $this->assertEquals(2, Traffic::visits($this->trafficSiteSlug));
+        $this->assertEquals(2, Traffic::visits('traffic_testing_slug'));
     }
 
     /** @test  */
     public function visits_are_persisted_between_requests_using_route_middleware()
     {
         $this->get('/route-with-middleware');
-        $this->assertEquals(1, Traffic::visits($this->trafficSiteSlug));
+        $this->assertEquals(1, Traffic::visits('traffic_testing_slug'));
 
         $this->get('/route-with-middleware');
         $this->get('/route-with-middleware');
-        $this->assertEquals(3, Traffic::visits($this->trafficSiteSlug));
+        $this->assertEquals(3, Traffic::visits('traffic_testing_slug'));
     }
 
     /** @test  */
@@ -145,11 +139,11 @@ class TrafficTest extends TestCase
         $this->setUpGlobalMiddleware();
 
         $this->get('/route-without-middleware');
-        $this->assertEquals(1, Traffic::visits($this->trafficSiteSlug));
+        $this->assertEquals(1, Traffic::visits('traffic_testing_slug'));
 
         $this->get('/route-without-middleware');
         $this->get('/route-without-middleware');
-        $this->assertEquals(3, Traffic::visits($this->trafficSiteSlug));
+        $this->assertEquals(3, Traffic::visits('traffic_testing_slug'));
     }
 
     /** @test  */
@@ -158,7 +152,7 @@ class TrafficTest extends TestCase
         config(['traffic.enabled' => false]);
 
         $this->get('/route-with-middleware');
-        $this->assertEquals(0, Traffic::visits($this->trafficSiteSlug));
+        $this->assertEquals(0, Traffic::visits('traffic_testing_slug'));
     }
 
     /** @test  */
@@ -167,21 +161,21 @@ class TrafficTest extends TestCase
         config(['traffic.single_visit' => true]);
 
         $this->get('/route-with-middleware');
-        $this->assertEquals(1, Traffic::visits($this->trafficSiteSlug));
+        $this->assertEquals(1, Traffic::visits('traffic_testing_slug'));
 
         $this->get('/route-with-middleware');
-        $this->assertEquals(1, Traffic::visits($this->trafficSiteSlug));
+        $this->assertEquals(1, Traffic::visits('traffic_testing_slug'));
 
         $this->get('/route-with-middleware');
-        $this->assertEquals(1, Traffic::visits($this->trafficSiteSlug));
+        $this->assertEquals(1, Traffic::visits('traffic_testing_slug'));
 
         session()->flush();
 
         $this->get('/route-with-middleware');
-        $this->assertEquals(2, Traffic::visits($this->trafficSiteSlug));
+        $this->assertEquals(2, Traffic::visits('traffic_testing_slug'));
 
         $this->get('/route-with-middleware');
-        $this->assertEquals(2, Traffic::visits($this->trafficSiteSlug));
+        $this->assertEquals(2, Traffic::visits('traffic_testing_slug'));
     }
 
     /** @test  */
