@@ -2,7 +2,10 @@
 
 namespace AdrianBav\Traffic\Tests;
 
+use AdrianBav\Traffic\Models\Ip;
 use Orchestra\Testbench\TestCase;
+use AdrianBav\Traffic\Models\Site;
+use AdrianBav\Traffic\Models\Agent;
 use Illuminate\Contracts\Http\Kernel;
 use Illuminate\Support\Facades\Route;
 use AdrianBav\Traffic\Facades\Traffic;
@@ -119,8 +122,8 @@ class TrafficTest extends TestCase
     /** @test */
     public function the_correct_visit_count_is_returned()
     {
-        Traffic::record($ip = 'localhost', $agent = 'Symfony');
-        Traffic::record($ip = 'localhost', $agent = 'Symfony');
+        Traffic::record($ip = '127.0.0.1', $agent = 'Symfony');
+        Traffic::record($ip = '127.0.0.1', $agent = 'Symfony');
 
         $this->assertEquals(2, Traffic::visits($this->trafficSiteSlug));
     }
@@ -179,5 +182,38 @@ class TrafficTest extends TestCase
 
         $this->get('/route-with-middleware');
         $this->assertEquals(2, Traffic::visits($this->trafficSiteSlug));
+    }
+
+    /** @test  */
+    public function a_site_is_related_to_a_visit()
+    {
+        $this->get('/route-with-middleware');
+        $this->get('/route-with-middleware');
+
+        $site = Site::where('slug', $this->trafficSiteSlug)->first();
+        $this->assertEquals(2, $site->visits()->count());
+    }
+
+    /** @test  */
+    public function an_ip_is_related_to_a_visit()
+    {
+        $this->get('/route-with-middleware');
+        $this->get('/route-with-middleware');
+        $this->get('/route-with-middleware');
+
+        $ip = Ip::where('address', '127.0.0.1')->first();
+        $this->assertEquals(3, $ip->visits()->count());
+    }
+
+    /** @test  */
+    public function an_agent_is_related_to_a_visit()
+    {
+        $this->get('/route-with-middleware');
+        $this->get('/route-with-middleware');
+        $this->get('/route-with-middleware');
+        $this->get('/route-with-middleware');
+
+        $agent = Agent::where('name', 'Symfony')->first();
+        $this->assertEquals(4, $agent->visits()->count());
     }
 }

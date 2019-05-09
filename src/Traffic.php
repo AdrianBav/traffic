@@ -2,6 +2,9 @@
 
 namespace AdrianBav\Traffic;
 
+use AdrianBav\Traffic\Models\Ip;
+use AdrianBav\Traffic\Models\Site;
+use AdrianBav\Traffic\Models\Agent;
 use AdrianBav\Traffic\Models\Visit;
 
 class Traffic
@@ -11,7 +14,7 @@ class Traffic
      *
      * @var  string
      */
-    protected $site;
+    protected $siteSlug;
 
     /**
      * Only record a single visit per session.
@@ -29,27 +32,31 @@ class Traffic
      */
     public function __construct($siteSlug, $singleVisit)
     {
-        $this->site = $siteSlug;
+        $this->siteSlug = $siteSlug;
         $this->singleVisitPerSession = $singleVisit;
     }
 
     /**
      * Record a visit.
      *
-     * @param   string  $ip
-     * @param   string  $agent
+     * @param   string  $ipAddress
+     * @param   string  $userAgent
      * @return  void
      */
-    public function record($ip, $agent)
+    public function record($ipAddress, $userAgent)
     {
         if ($this->singleVisitPerSession && $this->alreadyRecorded()) {
             return;
         }
 
+        $site = Site::firstOrCreate(['slug' => $this->siteSlug]);
+        $ip = Ip::firstOrCreate(['address' => $ipAddress]);
+        $agent = Agent::firstOrCreate(['name' => $userAgent]);
+
         Visit::create([
-            'site' => $this->site,
-            'ip' => $ip,
-            'agent' => $agent,
+            'site_id' => $site->id,
+            'ip_id' => $ip->id,
+            'agent_id' => $agent->id,
         ]);
 
         $this->markAsRecorded();
@@ -78,12 +85,17 @@ class Traffic
     /**
      * Return the number of visits.
      *
-     * @param   string  $site
+     * @param   string  $siteSlug
      * @return  int
      */
-    public function visits($site)
+    public function visits($siteSlug)
     {
-        return Visit::where('site', $site)
-            ->count();
+        $site = Site::whereSlug($siteSlug)->first();
+
+        if (is_null($site)) {
+            return 0;
+        }
+
+        return $site->visits()->count();
     }
 }
