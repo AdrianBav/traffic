@@ -190,8 +190,7 @@ class TrafficTest extends TestCase
         $this->get('/route-with-middleware');
         $this->get('/route-with-middleware');
 
-        $site = Site::where('slug', $this->trafficSiteSlug)->first();
-        $this->assertEquals(2, $site->visits()->count());
+        $this->assertEquals(2, Site::first()->visits()->count());
     }
 
     /** @test  */
@@ -201,8 +200,7 @@ class TrafficTest extends TestCase
         $this->get('/route-with-middleware');
         $this->get('/route-with-middleware');
 
-        $ip = Ip::where('address', '127.0.0.1')->first();
-        $this->assertEquals(3, $ip->visits()->count());
+        $this->assertEquals(3, Ip::first()->visits()->count());
     }
 
     /** @test  */
@@ -213,7 +211,6 @@ class TrafficTest extends TestCase
         $this->get('/route-with-middleware');
         $this->get('/route-with-middleware');
 
-        $agent = Agent::where('name', 'Symfony')->first();
-        $this->assertEquals(4, $agent->visits()->count());
+        $this->assertEquals(4, Agent::first()->visits()->count());
     }
 }
