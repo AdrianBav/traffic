@@ -16,7 +16,7 @@ class Traffic
     /**
      * Only record a single visit per session.
      *
-     * @var  boolean
+     * @var  bool
      */
     protected $singleVisitPerSession;
 
@@ -24,7 +24,7 @@ class Traffic
      * Instantiate a new Traffic instance.
      *
      * @param   string  $siteSlug
-     * @param   boolean  $singleVisit
+     * @param   bool  $singleVisit
      * @return  void
      */
     public function __construct($siteSlug, $singleVisit)
@@ -58,11 +58,11 @@ class Traffic
     /**
      * Check if this visit has already been recorded.
      *
-     * @return  boolean
+     * @return  bool
      */
     private function alreadyRecorded()
     {
-        return (session('recorded', false) === true);
+        return session('recorded', false) === true;
     }
 
     /**
