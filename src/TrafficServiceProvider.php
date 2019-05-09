@@ -42,7 +42,8 @@ class TrafficServiceProvider extends ServiceProvider
     }
 
     /**
-     * Clone the configured package connection to the apps database connections.
+     * Clone the configured package connection to a new connection 'traffic'
+     * in the main applications database connections.
      *
      * @return void
      */
@@ -50,11 +51,11 @@ class TrafficServiceProvider extends ServiceProvider
     {
         $connection = Config::get('traffic.database_default');
 
-        if ($connection !== 'default') {
-            $trafficConnection = Config::get('traffic.database_connections.'.$connection);
-        } else {
+        if ($connection == 'app-default') {
             $connection = Config::get('database.default');
             $trafficConnection = Config::get('database.connections.'.$connection);
+        } else {
+            $trafficConnection = Config::get('traffic.database_connections.'.$connection);
         }
 
         Config::set('database.connections.traffic', $trafficConnection);

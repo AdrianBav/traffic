@@ -34,11 +34,11 @@ return [
     | Here you may specify which of the database connections below you wish
     | to use as your default connection for all database work.
     |
-    | Use 'default' to use the main app's default connection.
+    | Use 'app-default' to use the main applications default connection.
     |
     */
 
-    'database_default' => env('TRAFFIC_DATABASE_DEFAULT', 'default'),
+    'database_default' => env('TRAFFIC_DATABASE_DEFAULT', 'app-default'),
 
     /*
     |--------------------------------------------------------------------------
