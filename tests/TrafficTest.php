@@ -149,4 +149,13 @@ class TrafficTest extends TestCase
         $this->get('/route-without-middleware');
         $this->assertEquals(3, Traffic::visits($this->trafficSiteSlug));
     }
+
+    /** @test  */
+    public function visits_are_not_recorded_when_package_is_disabled()
+    {
+        config(['traffic.enabled' => false]);
+
+        $this->get('/route-with-middleware');
+        $this->assertEquals(0, Traffic::visits($this->trafficSiteSlug));
+    }
 }
