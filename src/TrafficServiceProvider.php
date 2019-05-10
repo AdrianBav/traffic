@@ -41,7 +41,7 @@ class TrafficServiceProvider extends ServiceProvider
 
         $this->app->singleton('traffic', function ($app) {
             return new Traffic(
-                $app['config']->get('traffic'),
+                $app['config']['traffic'],
                 $app->make(RobotDetection::class)
             );
         });
@@ -53,7 +53,7 @@ class TrafficServiceProvider extends ServiceProvider
      *
      * @return void
      */
-    protected function setConnection()
+    private function setConnection()
     {
         $connection = Config::get('traffic.database_default');
 
