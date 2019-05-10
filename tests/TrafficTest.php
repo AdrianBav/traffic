@@ -221,4 +221,17 @@ class TrafficTest extends TestCase
 
         $this->assertEquals(1, Traffic::visits('traffic_testing_slug'));
     }
+
+    /** @test  */
+    public function robot_agents_can_be_recorded()
+    {
+        $this->app->bind(RobotDetection::class, FakeRobotDetection::class);
+        config(['traffic.ignore_robots' => false]);
+
+        Traffic::record($ip = '127.0.0.1', $agent = 'genuine');
+        Traffic::record($ip = '127.0.0.1', $agent = 'robot');
+        Traffic::record($ip = '127.0.0.1', $agent = 'robot');
+
+        $this->assertEquals(3, Traffic::visits('traffic_testing_slug'));
+    }
 }

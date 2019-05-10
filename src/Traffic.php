@@ -32,17 +32,25 @@ class Traffic
     protected $robotDetector;
 
     /**
+     * Disable the recording of the visits of robots.
+     *
+     * @var  bool
+     */
+    protected $ignoreRobots;
+
+    /**
      * Instantiate a new Traffic instance.
      *
-     * @param   string  $siteSlug
-     * @param   bool  $singleVisit
+     * @param   array  $config
      * @param   RobotDetection  $robotDetector
      * @return  void
      */
-    public function __construct($siteSlug, $singleVisit, RobotDetection $robotDetector)
+    public function __construct($config, RobotDetection $robotDetector)
     {
-        $this->siteSlug = $siteSlug;
-        $this->singleVisitPerSession = $singleVisit;
+        $this->siteSlug = $config['site_slug'];
+        $this->singleVisitPerSession = $config['single_visit'];
+        $this->ignoreRobots = $config['ignore_robots'];
+
         $this->robotDetector = $robotDetector;
     }
 
@@ -59,7 +67,7 @@ class Traffic
             return;
         }
 
-        if ($this->robotDetector->isRobot($userAgent)) {
+        if ($this->ignoreRobots && $this->robotDetector->isRobot($userAgent)) {
             return;
         }
 

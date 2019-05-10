@@ -42,8 +42,7 @@ class TrafficServiceProvider extends ServiceProvider
 
         $this->app->singleton('traffic', function ($app) {
             return new Traffic(
-                $app['config']->get('traffic.site_slug'),
-                $app['config']->get('traffic.single_visit'),
+                $app['config']->get('traffic'),
                 $app->make(RobotDetection::class)
             );
         });
