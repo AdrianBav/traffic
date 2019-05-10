@@ -10,8 +10,8 @@ use Illuminate\Contracts\Http\Kernel;
 use Illuminate\Support\Facades\Route;
 use AdrianBav\Traffic\Facades\Traffic;
 use AdrianBav\Traffic\TrafficServiceProvider;
-use AdrianBav\Traffic\Middlewares\RecordVisits;
 use AdrianBav\Traffic\Contracts\RobotDetection;
+use AdrianBav\Traffic\Middlewares\RecordVisits;
 
 class TrafficTest extends TestCase
 {
@@ -243,7 +243,7 @@ class TrafficTest extends TestCase
     {
         config(['traffic.excluded_ips' => [
             '666.6.6.6',
-            '999.9.9.9'
+            '999.9.9.9',
         ]]);
 
         Traffic::record($ip = '127.0.0.1', $agent = 'Symfony');
