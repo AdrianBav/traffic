@@ -31,14 +31,14 @@ php artisan migrate
 This packages provides a middleware which can be added as a global middleware or as a single route.
 
 ```php
-use AdrianBav\Traffic\Middlewares\Record;
+use AdrianBav\Traffic\Middlewares\RecordVisits;
 
 // in `app/Http/Kernel.php`
 
 protected $middleware = [
     // ...
 
-    Record::class
+    RecordVisits::class
 ];
 ```
 
@@ -47,7 +47,7 @@ protected $middleware = [
 
 Route::post('/article', function () {
     //
-})->middleware(Record::class);
+})->middleware(RecordVisits::class);
 ```
 
 Get a visit count for the specified site.

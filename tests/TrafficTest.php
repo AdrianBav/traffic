@@ -9,8 +9,8 @@ use AdrianBav\Traffic\Models\Agent;
 use Illuminate\Contracts\Http\Kernel;
 use Illuminate\Support\Facades\Route;
 use AdrianBav\Traffic\Facades\Traffic;
-use AdrianBav\Traffic\Middlewares\Record;
 use AdrianBav\Traffic\TrafficServiceProvider;
+use AdrianBav\Traffic\Middlewares\RecordVisits;
 use AdrianBav\Traffic\Contracts\RobotDetection;
 
 class TrafficTest extends TestCase
@@ -77,7 +77,7 @@ class TrafficTest extends TestCase
 
         Route::get('/route-with-middleware', function () {
             return response();
-        })->middleware(Record::class);
+        })->middleware(RecordVisits::class);
     }
 
     /**
@@ -87,7 +87,7 @@ class TrafficTest extends TestCase
      */
     protected function setUpGlobalMiddleware()
     {
-        $this->app[Kernel::class]->pushMiddleware(Record::class);
+        $this->app[Kernel::class]->pushMiddleware(RecordVisits::class);
     }
 
     /**

@@ -6,7 +6,7 @@ use Closure;
 use Illuminate\Http\Request;
 use AdrianBav\Traffic\Facades\Traffic;
 
-class Record
+class RecordVisits
 {
     public function handle(Request $request, Closure $next)
     {
