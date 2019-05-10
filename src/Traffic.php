@@ -6,6 +6,7 @@ use AdrianBav\Traffic\Models\Ip;
 use AdrianBav\Traffic\Models\Site;
 use AdrianBav\Traffic\Models\Agent;
 use AdrianBav\Traffic\Models\Visit;
+use AdrianBav\Traffic\Contracts\RobotDetection;
 
 class Traffic
 {
@@ -24,16 +25,25 @@ class Traffic
     protected $singleVisitPerSession;
 
     /**
+     * Detect bots/crawlers/spiders from the user agent.
+     *
+     * @var  RobotDetection
+     */
+    protected $robotDetector;
+
+    /**
      * Instantiate a new Traffic instance.
      *
      * @param   string  $siteSlug
      * @param   bool  $singleVisit
+     * @param   RobotDetection  $robotDetector
      * @return  void
      */
-    public function __construct($siteSlug, $singleVisit)
+    public function __construct($siteSlug, $singleVisit, RobotDetection $robotDetector)
     {
         $this->siteSlug = $siteSlug;
         $this->singleVisitPerSession = $singleVisit;
+        $this->robotDetector = $robotDetector;
     }
 
     /**
@@ -46,6 +56,10 @@ class Traffic
     public function record($ipAddress, $userAgent)
     {
         if ($this->singleVisitPerSession && $this->alreadyRecorded()) {
+            return;
+        }
+
+        if ($this->robotDetector->isRobot($userAgent)) {
             return;
         }
 

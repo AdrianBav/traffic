@@ -4,6 +4,8 @@ namespace AdrianBav\Traffic;
 
 use Illuminate\Support\Facades\Config;
 use Illuminate\Support\ServiceProvider;
+use AdrianBav\Traffic\CrawlerRobotDetection;
+use AdrianBav\Traffic\Contracts\RobotDetection;
 
 class TrafficServiceProvider extends ServiceProvider
 {
@@ -36,10 +38,13 @@ class TrafficServiceProvider extends ServiceProvider
             __DIR__.'/../config/traffic.php', 'traffic'
         );
 
+        $this->app->bind(RobotDetection::class, CrawlerRobotDetection::class);
+
         $this->app->singleton('traffic', function ($app) {
             return new Traffic(
                 $app['config']->get('traffic.site_slug'),
-                $app['config']->get('traffic.single_visit')
+                $app['config']->get('traffic.single_visit'),
+                $app->make(RobotDetection::class)
             );
         });
     }

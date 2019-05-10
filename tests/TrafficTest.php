@@ -11,6 +11,8 @@ use Illuminate\Support\Facades\Route;
 use AdrianBav\Traffic\Facades\Traffic;
 use AdrianBav\Traffic\Middlewares\Record;
 use AdrianBav\Traffic\TrafficServiceProvider;
+use AdrianBav\Traffic\Contracts\RobotDetection;
+use AdrianBav\Traffic\Tests\FakeRobotDetection;
 
 class TrafficTest extends TestCase
 {
@@ -206,5 +208,17 @@ class TrafficTest extends TestCase
         $this->get('/route-with-middleware');
 
         $this->assertEquals(4, Agent::first()->visits()->count());
+    }
+
+    /** @test  */
+    public function robot_agents_are_not_recorded()
+    {
+        $this->app->bind(RobotDetection::class, FakeRobotDetection::class);
+
+        Traffic::record($ip = '127.0.0.1', $agent = 'genuine');
+        Traffic::record($ip = '127.0.0.1', $agent = 'robot');
+        Traffic::record($ip = '127.0.0.1', $agent = 'robot');
+
+        $this->assertEquals(1, Traffic::visits('traffic_testing_slug'));
     }
 }
