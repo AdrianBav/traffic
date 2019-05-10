@@ -39,6 +39,13 @@ class Traffic
     protected $ignoreRobots;
 
     /**
+     * Disable the recording of the visits from excluded IPs.
+     *
+     * @var  array
+     */
+    protected $excludedIps;
+
+    /**
      * Instantiate a new Traffic instance.
      *
      * @param   array  $config
@@ -50,6 +57,7 @@ class Traffic
         $this->siteSlug = $config['site_slug'];
         $this->singleVisitPerSession = $config['single_visit'];
         $this->ignoreRobots = $config['ignore_robots'];
+        $this->excludedIps = $config['excluded_ips'];
 
         $this->robotDetector = $robotDetector;
     }
@@ -68,6 +76,10 @@ class Traffic
         }
 
         if ($this->ignoreRobots && $this->robotDetector->isRobot($userAgent)) {
+            return;
+        }
+
+        if ($this->ipIsExcluded($ipAddress)) {
             return;
         }
 
@@ -102,6 +114,17 @@ class Traffic
     private function markAsRecorded()
     {
         session(['recorded' => true]);
+    }
+
+    /**
+     * Determine if the IP address should be excluded.
+     *
+     * @param   string  $ipAddress
+     * @return  bool
+     */
+    private function ipIsExcluded($ipAddress)
+    {
+        return in_array($ipAddress, $this->excludedIps);
     }
 
     /**

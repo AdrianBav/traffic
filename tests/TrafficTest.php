@@ -104,6 +104,9 @@ class TrafficTest extends TestCase
         // Allow recording of multiple visits per session
         $app['config']->set('traffic.single_visit', false);
 
+        // Allow all requests through for testing
+        $app['config']->set('traffic.ignore_robots', false);
+
         // The service provider will clone this connection to 'traffic'
         $app['config']->set('traffic.database_default', 'testing');
     }
@@ -210,8 +213,9 @@ class TrafficTest extends TestCase
     }
 
     /** @test  */
-    public function robot_agents_are_not_recorded()
+    public function robot_agents_can_be_blocked()
     {
+        config(['traffic.ignore_robots' => true]);
         $this->app->bind(RobotDetection::class, FakeRobotDetection::class);
 
         Traffic::record($ip = '127.0.0.1', $agent = 'genuine');
@@ -224,12 +228,30 @@ class TrafficTest extends TestCase
     /** @test  */
     public function robot_agents_can_be_recorded()
     {
-        $this->app->bind(RobotDetection::class, FakeRobotDetection::class);
         config(['traffic.ignore_robots' => false]);
+        $this->app->bind(RobotDetection::class, FakeRobotDetection::class);
 
         Traffic::record($ip = '127.0.0.1', $agent = 'genuine');
         Traffic::record($ip = '127.0.0.1', $agent = 'robot');
         Traffic::record($ip = '127.0.0.1', $agent = 'robot');
+
+        $this->assertEquals(3, Traffic::visits('traffic_testing_slug'));
+    }
+
+    /** @test  */
+    public function ips_can_be_excluded()
+    {
+        config(['traffic.excluded_ips' => [
+            '666.6.6.6',
+            '999.9.9.9'
+        ]]);
+
+        Traffic::record($ip = '127.0.0.1', $agent = 'Symfony');
+        Traffic::record($ip = '666.6.6.6', $agent = 'Symfony');
+        Traffic::record($ip = '666.6.6.6', $agent = 'Symfony');
+        Traffic::record($ip = '127.0.0.1', $agent = 'Symfony');
+        Traffic::record($ip = '999.9.9.9', $agent = 'Symfony');
+        Traffic::record($ip = '127.0.0.1', $agent = 'Symfony');
 
         $this->assertEquals(3, Traffic::visits('traffic_testing_slug'));
     }
