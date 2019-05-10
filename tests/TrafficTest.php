@@ -12,7 +12,6 @@ use AdrianBav\Traffic\Facades\Traffic;
 use AdrianBav\Traffic\Middlewares\Record;
 use AdrianBav\Traffic\TrafficServiceProvider;
 use AdrianBav\Traffic\Contracts\RobotDetection;
-use AdrianBav\Traffic\Tests\FakeRobotDetection;
 
 class TrafficTest extends TestCase
 {

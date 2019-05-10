@@ -4,7 +4,6 @@ namespace AdrianBav\Traffic;
 
 use Illuminate\Support\Facades\Config;
 use Illuminate\Support\ServiceProvider;
-use AdrianBav\Traffic\CrawlerRobotDetection;
 use AdrianBav\Traffic\Contracts\RobotDetection;
 
 class TrafficServiceProvider extends ServiceProvider
