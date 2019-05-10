@@ -8,7 +8,7 @@ interface RobotDetection
      * Detect spider/crawlers/bots from the user agent.
      *
      * @param   string  $userAgent
-     * @return  boolean
+     * @return  bool
      */
     public function isRobot($userAgent);
 }
