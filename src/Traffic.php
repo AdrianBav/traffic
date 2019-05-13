@@ -135,12 +135,10 @@ class Traffic
      */
     public function visits($siteSlug)
     {
-        $site = Site::whereSlug($siteSlug)->first();
+        $count = optional(Site::whereSlug($siteSlug)->first(), function ($site) {
+            return $site->visits()->count();
+        });
 
-        if (is_null($site)) {
-            return 0;
-        }
-
-        return $site->visits()->count();
+        return $count ?? 0;
     }
 }
