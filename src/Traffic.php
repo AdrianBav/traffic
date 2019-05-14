@@ -5,7 +5,6 @@ namespace AdrianBav\Traffic;
 use AdrianBav\Traffic\Models\Ip;
 use AdrianBav\Traffic\Models\Site;
 use AdrianBav\Traffic\Models\Agent;
-use AdrianBav\Traffic\Models\Visit;
 use AdrianBav\Traffic\Contracts\RobotDetection;
 
 class Traffic
@@ -71,29 +70,47 @@ class Traffic
      */
     public function record($ipAddress, $userAgent)
     {
-        if ($this->singleVisitPerSession && $this->alreadyRecorded()) {
-            return;
-        }
-
-        if ($this->ignoreRobots && $this->robotDetector->isRobot($userAgent)) {
-            return;
-        }
-
-        if ($this->ipIsExcluded($ipAddress)) {
-            return;
-        }
-
         $site = Site::firstOrCreate(['slug' => $this->siteSlug]);
-        $ip = Ip::firstOrCreate(['address' => $ipAddress]);
-        $agent = Agent::firstOrCreate(['name' => $userAgent]);
 
-        Visit::create([
-            'site_id' => $site->id,
-            'ip_id' => $ip->id,
-            'agent_id' => $agent->id,
+        if ($this->shouldRecord($site, $ipAddress, $userAgent) === false) {
+            return;
+        }
+
+        $site->visits()->create([
+            'ip_id' => Ip::firstOrCreate(['address' => $ipAddress])->id,
+            'agent_id' => Agent::firstOrCreate(['name' => $userAgent])->id,
         ]);
 
         $this->markAsRecorded();
+    }
+
+    /**
+     * Determine if the visit should be recorded.
+     *
+     * @param   string  $site
+     * @param   string  $ipAddress
+     * @param   string  $userAgent
+     * @return  bool
+     */
+    private function shouldRecord($site, $ipAddress, $userAgent)
+    {
+        if ($this->robotDetector->isRobot($userAgent)) {
+            $site->increment('robots');
+
+            if ($this->ignoreRobots) {
+                return false;
+            }
+        }
+
+        if ($this->ipIsExcluded($ipAddress)) {
+            return false;
+        }
+
+        if ($this->singleVisitPerSession && $this->alreadyRecorded()) {
+            return false;
+        }
+
+        return true;
     }
 
     /**
@@ -135,12 +152,25 @@ class Traffic
      */
     public function visits($siteSlug)
     {
-        $site = Site::whereSlug($siteSlug)->first();
-
-        if (is_null($site)) {
+        if (is_null($site = Site::whereSlug($siteSlug)->first())) {
             return 0;
         }
 
         return $site->visits()->count();
+    }
+
+    /**
+     * Return the number of robot visits.
+     *
+     * @param   string  $siteSlug
+     * @return  int
+     */
+    public function robots($siteSlug)
+    {
+        if (is_null($site = Site::whereSlug($siteSlug)->first())) {
+            return 0;
+        }
+
+        return $site->robots;
     }
 }

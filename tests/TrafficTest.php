@@ -239,6 +239,36 @@ class TrafficTest extends TestCase
     }
 
     /** @test  */
+    public function robot_visit_counts_are_captured_seperatly()
+    {
+        config(['traffic.ignore_robots' => false]);
+        $this->app->bind(RobotDetection::class, FakeRobotDetection::class);
+
+        Traffic::record($ip = '127.0.0.1', $agent = 'genuine');
+        Traffic::record($ip = '127.0.0.1', $agent = 'robot');
+        Traffic::record($ip = '127.0.0.1', $agent = 'robot');
+        Traffic::record($ip = '127.0.0.1', $agent = 'genuine');
+        Traffic::record($ip = '127.0.0.1', $agent = 'robot');
+
+        $this->assertEquals(3, Traffic::robots('traffic_testing_slug'));
+    }
+
+    /** @test  */
+    public function robot_visit_counts_are_captured_seperatly_even_when_ignored_from_visits()
+    {
+        config(['traffic.ignore_robots' => true]);
+        $this->app->bind(RobotDetection::class, FakeRobotDetection::class);
+
+        Traffic::record($ip = '127.0.0.1', $agent = 'genuine');
+        Traffic::record($ip = '127.0.0.1', $agent = 'robot');
+        Traffic::record($ip = '127.0.0.1', $agent = 'robot');
+        Traffic::record($ip = '127.0.0.1', $agent = 'genuine');
+        Traffic::record($ip = '127.0.0.1', $agent = 'robot');
+
+        $this->assertEquals(3, Traffic::robots('traffic_testing_slug'));
+    }
+
+    /** @test  */
     public function ips_can_be_excluded()
     {
         config(['traffic.excluded_ips' => [

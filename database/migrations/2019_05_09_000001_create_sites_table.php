@@ -17,6 +17,7 @@ class CreateSitesTable extends Migration
             $table->bigIncrements('id');
 
             $table->string('slug', 50);
+            $table->bigInteger('robots')->default(0);
         });
     }
 
