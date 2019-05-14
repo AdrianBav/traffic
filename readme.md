@@ -73,5 +73,13 @@ use AdrianBav\Traffic\Facades\Traffic;
 $blogVisitCount = Traffic::visits('blog_site_slug');
 ```
 
+To get a robot visit count for the specified site:
+
+```php
+use AdrianBav\Traffic\Facades\Traffic;
+
+$bioRobotVisitCount = Traffic::robots('bio_site_slug');
+```
+
 ## License
 [MIT](./LICENSE.md)
