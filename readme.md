@@ -6,7 +6,18 @@ Capture website traffic.
 
 ## Installation
 
-Require the package using composer:
+This package isn't on Packagist. Add it as a repository to the `composer.json` file:
+
+```json
+"repositories": [
+    {
+        "type": "vcs",
+        "url": "https://github.com/AdrianBav/traffic"
+    }
+]
+```
+
+Next, require the package using composer:
 
 ```bash
 composer require adrianbav/traffic
@@ -14,7 +25,8 @@ composer require adrianbav/traffic
 
 ## Configuration
 
-To publish the config, run the vendor publish command:
+Most configuration can be done via the environment variables.
+However, to publish the config, run the vendor publish command:
 
 ```bash
 php artisan vendor:publish --provider="AdrianBav\Traffic\TrafficServiceProvider"
