@@ -10,8 +10,15 @@ class Agent extends BaseModel
      * @var array
      */
     protected $guarded = [
-        'id', 'updated_at', 'created_at',
+        'id',
     ];
+
+    /**
+     * Indicates if the model should be timestamped.
+     *
+     * @var bool
+     */
+    public $timestamps = false;
 
     /**
      * Get all the visits for the Agent.

@@ -17,8 +17,6 @@ class CreateIpsTable extends Migration
             $table->bigIncrements('id');
 
             $table->ipAddress('address');
-
-            $table->timestamps();
         });
     }
 

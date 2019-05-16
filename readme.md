@@ -6,7 +6,18 @@ Capture website traffic.
 
 ## Installation
 
-Require the package using composer:
+This package isn't on Packagist. Add it as a repository to the `composer.json` file:
+
+```json
+"repositories": [
+    {
+        "type": "vcs",
+        "url": "https://github.com/AdrianBav/traffic"
+    }
+]
+```
+
+Next, require the package using composer:
 
 ```bash
 composer require adrianbav/traffic
@@ -14,7 +25,8 @@ composer require adrianbav/traffic
 
 ## Configuration
 
-To publish the config, run the vendor publish command:
+Most configuration can be done via the environment variables.
+However, to publish the config, run the vendor publish command:
 
 ```bash
 php artisan vendor:publish --provider="AdrianBav\Traffic\TrafficServiceProvider"
@@ -29,6 +41,8 @@ php artisan traffic:migrate
 ## Usage
 
 This packages provides a middleware which can be added as a global middleware or as a single route.
+
+To record visits:
 
 ```php
 use AdrianBav\Traffic\Middlewares\RecordVisits;
@@ -46,16 +60,25 @@ protected $middleware = [
 // in a routes file
 
 Route::post('/article', function () {
-    //
+    // ...
+
 })->middleware(RecordVisits::class);
 ```
 
-Get a visit count for the specified site.
+To get a visit count for the specified site:
 
 ```php
 use AdrianBav\Traffic\Facades\Traffic;
 
 $blogVisitCount = Traffic::visits('blog_site_slug');
+```
+
+To get a robot visit count for the specified site:
+
+```php
+use AdrianBav\Traffic\Facades\Traffic;
+
+$bioRobotVisitCount = Traffic::robots('bio_site_slug');
 ```
 
 ## License
