@@ -61,7 +61,11 @@ class TrafficTest extends TestCase
      */
     protected function setUpMigrations()
     {
-        $this->artisan('migrate', ['--database' => 'traffic']);
+        $this->artisan('migrate', [
+            '--database' => 'traffic',
+            '--path' => __DIR__.'/../database/migrations',
+            '--realpath' => true,
+        ]);
     }
 
     /**
