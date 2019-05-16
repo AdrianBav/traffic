@@ -23,7 +23,7 @@ php artisan vendor:publish --provider="AdrianBav\Traffic\TrafficServiceProvider"
 To create the necessary tables, run the migrate command:
 
 ```bash
-php artisan migrate
+php artisan traffic:migrate
 ```
 
 ## Usage

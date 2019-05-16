@@ -19,11 +19,13 @@ class TrafficServiceProvider extends ServiceProvider
             __DIR__.'/../config/traffic.php' => config_path('traffic.php'),
         ]);
 
-        $this->setConnection();
+        $this->createTrafficDbConnection();
 
-        $this->loadMigrationsFrom(
-            __DIR__.'/../database/migrations'
-        );
+        if ($this->app->runningInConsole()) {
+            $this->commands([
+                Console\MigrateCommand::class,
+            ]);
+        }
     }
 
     /**
@@ -53,7 +55,7 @@ class TrafficServiceProvider extends ServiceProvider
      *
      * @return void
      */
-    private function setConnection()
+    private function createTrafficDbConnection()
     {
         $connection = Config::get('traffic.database_default');
 
