@@ -16,7 +16,7 @@ class CreateAgentsTable extends Migration
         Schema::connection('traffic')->create('agents', function (Blueprint $table) {
             $table->bigIncrements('id');
 
-            $table->string('name');
+            $table->string('name')->unique();
         });
     }
 

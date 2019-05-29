@@ -16,7 +16,7 @@ class CreateIpsTable extends Migration
         Schema::connection('traffic')->create('ips', function (Blueprint $table) {
             $table->bigIncrements('id');
 
-            $table->ipAddress('address');
+            $table->ipAddress('address')->unique();
         });
     }
 
