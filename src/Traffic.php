@@ -62,6 +62,16 @@ class Traffic
     }
 
     /**
+     * Get the site slug.
+     *
+     * @return  string
+     */
+    public function siteSlug()
+    {
+        return $this->siteSlug;
+    }
+
+    /**
      * Record a visit.
      *
      * @param   string  $ipAddress

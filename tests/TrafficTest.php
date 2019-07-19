@@ -115,6 +115,14 @@ class TrafficTest extends TestCase
         $app['config']->set('traffic.database_default', 'testing');
     }
 
+    /** @test  */
+    public function the_site_slug_can_be_retrieved()
+    {
+        $siteSlug = Traffic::siteSlug();
+
+        $this->assertEquals('traffic_testing_slug', $siteSlug);
+    }
+
     /** @test */
     public function the_visit_count_starts_at_zero()
     {
